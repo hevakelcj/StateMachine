@@ -9,28 +9,28 @@ template <typename StateType, typename EventType>
 class StateMachine
 {
 public:
-    typedef boost::function<bool()> GuardFun;
-    typedef boost::function<void()> ActionFun;
+    typedef boost::function<bool()> GuardFunc;
+    typedef boost::function<void()> ActionFunc;
 
     struct Item {
         StateType currState, nextState;
         EventType triger;
-        GuardFun  guard;
-        ActionFun action;
+        GuardFunc  guard;
+        ActionFunc action;
 
-        Item(StateType cs, StateType ns, EventType t, GuardFun gf, ActionFun af)
+        Item(StateType cs, StateType ns, EventType t, GuardFunc gf, ActionFunc af)
             : currState(cs), nextState(ns), triger(t), guard(gf), action(af) {}
     };
 
     StateMachine(StateType startState) : m_currState(startState) {}
 
-    void append(StateType cs, StateType ns, EventType t, GuardFun gf, ActionFun af) {
+    void append(StateType cs, StateType ns, EventType t, GuardFunc gf, ActionFunc af) {
         m_stateTable.push_back(Item(cs, ns, t, gf, af));
     }
-    void append(StateType cs, StateType ns, EventType t, GuardFun gf) {
+    void append(StateType cs, StateType ns, EventType t, GuardFunc gf) {
         m_stateTable.push_back(Item(cs, ns, t, gf, boost::bind(&StateMachine::default_action, this)));
     }
-    void append(StateType cs, StateType ns, EventType t, int, ActionFun af) {
+    void append(StateType cs, StateType ns, EventType t, int, ActionFunc af) {
         m_stateTable.push_back(Item(cs, ns, t, boost::bind(&StateMachine::default_guard, this), af));
     }
     void append(StateType cs, StateType ns, EventType t) {
