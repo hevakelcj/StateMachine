@@ -24,12 +24,23 @@ private:
     QString m_text;
 };
 
+// We need print information while enter and leave this state
+class PlayState : public VideoState
+{
+public:
+    PlayState() : VideoState("Playing") {}
+protected:
+    virtual void enter();
+    virtual void exit();
+};
+
 class VideoStateMachine : public QObject
 {
     Q_OBJECT
 public:
     explicit VideoStateMachine(QObject *parent = 0);
-    
+    ~VideoStateMachine();
+
 signals:
     void stateChangedSignal(VideoState *newState);
 

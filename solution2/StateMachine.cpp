@@ -33,8 +33,8 @@ State* State::translate(EventType event)
         const TransItem* item = & (c_iter->second);
         if (item->guard()) {
             nextState = item->nextState;
-            item->action();
             this->exit();
+            item->action();
             nextState->enter();
         } else {
             nextState = this;
@@ -45,8 +45,17 @@ State* State::translate(EventType event)
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+void StateMachine::setOriginState(State *originState)
+{
+    assert(originState != NULL);    // what on earth you want set ?
+    currentState = originState;
+}
+
 StateMachine::Result StateMachine::translate(EventType event)
 {
+    assert(currentState != NULL);
+    // please set origin state before state translation
+
     State *next = currentState->translate(event);
     if (next == NULL) {
         return Error;

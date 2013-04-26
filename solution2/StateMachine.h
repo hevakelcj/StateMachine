@@ -52,14 +52,13 @@ public:
         Error
     };
 
-    StateMachine(State* originState)
-        : currentState(originState)
-    {
-        assert(originState != NULL);
-    }
+    StateMachine(State* originState = NULL)
+        : currentState(originState) {}
+
+    void   setOriginState(State* originState);
+    State* getCurrentState() { return currentState; }
 
     Result translate(EventType event);
-    State* getCurrentState() { return currentState; }
 
 private:
     State* currentState;
