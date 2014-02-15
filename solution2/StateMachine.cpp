@@ -25,7 +25,7 @@ void State::addTransition(EventType event, State *nextState, int, ActionFunc act
                                   boost::bind(&State::guard, this), action)));
 }
 
-State* State::translate(EventType event)
+State* State::acceptEvent(EventType event)
 {
     State *nextState = this;
 
@@ -53,12 +53,12 @@ void StateMachine::setOriginState(State *originState)
     currentState = originState;
 }
 
-StateMachine::Result StateMachine::translate(EventType event)
+StateMachine::Result StateMachine::acceptEvent(EventType event)
 {
     assert(currentState != NULL);
     // please set origin state before state translation
 
-    State *next = currentState->translate(event);
+    State *next = currentState->acceptEvent(event);
     if (next == NULL) {
         return Error;
     } else if (next == currentState) {

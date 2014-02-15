@@ -46,7 +46,7 @@ VideoStateMachine::~VideoStateMachine()
 
 void VideoStateMachine::eventTriger(Event event)
 {
-    if (sm.translate(event) == StateMachine::Changed) {
+    if (sm.acceptEvent(event) == StateMachine::Changed) {
         emit stateChangedSignal(static_cast<VideoState*>(sm.getCurrentState()));
     }
 }

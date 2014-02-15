@@ -18,7 +18,7 @@ public:
     void addTransition(EventType event, State *nextState, int, ActionFunc action);
     void addTransition(EventType event, State *nextState, GuardFunc guard, ActionFunc action);
 
-    State* translate(EventType event);
+    State* acceptEvent(EventType event);
 
 protected:
     virtual void enter() {}
@@ -60,7 +60,7 @@ public:
     void   setOriginState(State* originState);
     State* getCurrentState() { return currentState; }
 
-    Result translate(EventType event);
+    Result acceptEvent(EventType event);
 
 private:
     State* currentState;
