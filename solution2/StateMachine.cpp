@@ -4,42 +4,44 @@
 void State::addTransition(EventType event, State *nextState,
                           GuardFunc guard, ActionFunc action)
 {
-    transTable[event] = TransItem(nextState, guard, action);
+    transTable.insert(std::pair<EventType, TransItem>(event, TransItem(nextState, guard, action)));
 }
 
 void State::addTransition(EventType event, State *nextState)
 {
-    transTable[event] = TransItem(nextState, boost::bind(&State::guard, this),
-                                  boost::bind(&State::action, this));
+    transTable.insert(std::pair<EventType, TransItem>(event, TransItem(nextState, boost::bind(&State::guard, this),
+                                  boost::bind(&State::action, this))));
 }
 
 void State::addTransition(EventType event, State *nextState, GuardFunc guard)
 {
-    transTable[event] = TransItem(nextState, guard,
-                                  boost::bind(&State::action, this));
+    transTable.insert(std::pair<EventType, TransItem>(event, TransItem(nextState, guard,
+                                  boost::bind(&State::action, this))));
 }
 
 void State::addTransition(EventType event, State *nextState, int, ActionFunc action)
 {
-    transTable[event] = TransItem(nextState, boost::bind(&State::guard, this), action);
+    transTable.insert(std::pair<EventType, TransItem>(event, TransItem(nextState,
+                                  boost::bind(&State::guard, this), action)));
 }
 
 State* State::translate(EventType event)
 {
-    State *nextState = NULL;
+    State *nextState = this;
 
-    std::map<EventType, TransItem>::const_iterator c_iter = transTable.find(event);
-    if ( c_iter != transTable.end()) {
+    std::multimap<EventType, TransItem>::const_iterator c_iter = transTable.begin();
+    while (c_iter != transTable.end()) {
         const TransItem* item = & (c_iter->second);
-        if (item->guard()) {
+        if (c_iter->first == event && item->guard()) {
             nextState = item->nextState;
             this->exit();
             item->action();
             nextState->enter();
-        } else {
-            nextState = this;
+            break;
         }
+        ++ c_iter;
     }
+
     return nextState;
 }
 

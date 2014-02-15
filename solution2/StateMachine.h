@@ -11,6 +11,8 @@ typedef int EventType;
 class State
 {
 public:
+    virtual ~State() {}
+
     void addTransition(EventType event, State *nextState);
     void addTransition(EventType event, State *nextState, GuardFunc guard);
     void addTransition(EventType event, State *nextState, int, ActionFunc action);
@@ -37,7 +39,7 @@ private:
           , action(boost::function<void()>(NULL)) {}
     };
 
-    std::map<EventType, TransItem> transTable;
+    std::multimap<EventType, TransItem> transTable;
 };
 
 
